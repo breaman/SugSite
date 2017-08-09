@@ -1,0 +1,12 @@
+{
+    "apps": [
+        {
+            "root": "ClientApp"
+        }
+    ],
+    "defaults": {
+        "component": {
+            "spec": false
+        }
+    }
+}
