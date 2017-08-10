@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SugSite.Web.Configuration;
 
 namespace SugSite.Web
 {
@@ -25,6 +27,18 @@ namespace SugSite.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddIdentityServer(options => 
+            {
+                options.Events.RaiseSuccessEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseErrorEvents = true;
+            })
+            .AddInMemoryClients(Clients.Get())
+            .AddInMemoryIdentityResources(Resources.GetIdentityResources())
+            .AddInMemoryApiResources(Resources.GetApiResources())
+            .AddDeveloperSigningCredential()
+            .AddTestUsers(TestUsers.Users);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +56,8 @@ namespace SugSite.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseIdentityServer();
 
             app.UseStaticFiles();
 
